@@ -32,9 +32,7 @@ class ArticlesController extends AppController
         if ($this->request->is('post')) {
             $article = $this->Articles->patchEntity($article, $this->request->getData());
 
-            // L'écriture de 'user_id' en dur est temporaire et
-            // sera supprimée quand nous aurons mis en place l'authentification.
-            $article->user_id = 1;
+            $article->user_id = $this->request->getAttribute('identity')->getIdentifier();
 
             if ($this->Articles->save($article)) {
                 $this->Flash->success(__('Votre article a été sauvegardé.'));
@@ -55,7 +53,9 @@ class ArticlesController extends AppController
             ->firstOrFail();
 
         if ($this->request->is(['post', 'put'])) {
-            $this->Articles->patchEntity($article, $this->request->getData());
+            $this->Articles->patchEntity($article, $this->request->getData(), [
+                'accessibleFields' => ['user_id' => false]
+            ]);
             if ($this->Articles->save($article)) {
                 $this->Flash->success(__('Votre article a bien été modifié.'));
                 return $this->redirect(['action' => 'index']);

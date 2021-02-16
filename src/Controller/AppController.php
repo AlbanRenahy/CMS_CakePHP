@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since     0.2.9
  * @license   https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace App\Controller;
 
 use Cake\Controller\Controller;
@@ -44,11 +46,21 @@ class AppController extends Controller
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Paginator');
         $this->loadComponent('Flash');
+        // Ajoutez cette ligne pour vérifier le résultat de l'authentification et verrouiller votre site
+        $this->loadComponent('Authentication.Authentication');
 
         /*
          * Enable the following component for recommended CakePHP form protection settings.
          * see https://book.cakephp.org/4/en/controllers/components/form-protection.html
          */
         //$this->loadComponent('FormProtection');
+    }
+
+    public function beforeFilter(\Cake\Event\EventInterface $event)
+    {
+        parent::beforeFilter($event);
+        // pour tous les contrôleurs de notre application, rendre les actions
+        // index et view publiques, en ignorant la vérification d'authentification
+        $this->Authentication->addUnauthenticatedActions(['index', 'view']);
     }
 }
