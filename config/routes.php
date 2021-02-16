@@ -57,6 +57,13 @@ $routes->scope('/', function (RouteBuilder $builder) {
      */
     $builder->connect('/pages/*', 'Pages::display');
 
+    // Ceci est la route à ajouter pour notre nouvelle action.
+    // Le `*` à la fin permet de préciser à CakePHP que cette action
+    // a des paramètres qui lui seront passés
+    $builder->scope('/articles', function (RouteBuilder $builder) {
+        $builder->connect('/tagged/*', ['controller' => 'Articles', 'action' => 'tags']);
+    });
+
     /*
      * Connect catchall routes for all controllers.
      *

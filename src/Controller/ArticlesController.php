@@ -19,7 +19,7 @@ class ArticlesController extends AppController
      */
     public function view($slug = null)
     {
-        $article = $this->Articles->findBySlug($slug)->firstOrFail();
+        $article = $this->Articles->findBySlug($slug)->contain('Tags')->firstOrFail();
         $this->set(compact('article'));
     }
 
@@ -56,6 +56,7 @@ class ArticlesController extends AppController
     {
         $article = $this->Articles
             ->findBySlug($slug)
+            ->contain('Tags')
             ->firstOrFail();
 
         if ($this->request->is(['post', 'put'])) {
@@ -90,5 +91,24 @@ class ArticlesController extends AppController
 
             return $this->redirect(['action' => 'index']);
         }
+    }
+
+    public function tags()
+    {
+        // La clé 'pass' est fournie par CakePHP et contient tous les
+        // segments d'URL passés dans la requête
+        $tags = $this->request->getParam('pass');
+
+        // Utilisation de ArticlesTable pour trouver les articles taggés
+        $articles = $this->Articles->find('tagged', [
+            'tags' => $tags
+        ])
+            ->all();
+
+        // Passage des variables dans le contexte de la view du template
+        $this->set([
+            'articles' => $articles,
+            'tags' => $tags
+        ]);
     }
 }
