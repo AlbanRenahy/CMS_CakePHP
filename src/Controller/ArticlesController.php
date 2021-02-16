@@ -44,4 +44,39 @@ class ArticlesController extends AppController
         }
         $this->set('article', $article);
     }
+
+    /**
+     * Edit an article
+     */
+    public function edit($slug)
+    {
+        $article = $this->Articles
+            ->findBySlug($slug)
+            ->firstOrFail();
+
+        if ($this->request->is(['post', 'put'])) {
+            $this->Articles->patchEntity($article, $this->request->getData());
+            if ($this->Articles->save($article)) {
+                $this->Flash->success(__('Votre article a bien été modifié.'));
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('Votre article n\'a pas pu être modifié.'));
+        }
+
+        $this->set('article', $article);
+    }
+
+    /**
+     * Delete an article
+     */
+    public function delete($slug)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+
+        $article = $this->Articles->findBySlug($slug)->firstOrFail();
+        if ($this->Articles->delete($article)) {
+            $this->Flash->success(__('L\'article a bien été supprimé.', $article->title));
+            return $this->redirect(['action' => 'index']);
+        }
+    }
 }
