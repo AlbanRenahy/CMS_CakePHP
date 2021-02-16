@@ -109,7 +109,6 @@ class UsersController extends AppController
         parent::beforeFilter($event);
         // Configurez l'action de connexion pour ne pas exiger d'authentification,
         // évitant ainsi le problème de la boucle de redirection infinie
-        $this->Authentication->addUnauthenticatedActions(['login']);
         $this->Authentication->addUnauthenticatedActions(['login', 'add']);
     }
 

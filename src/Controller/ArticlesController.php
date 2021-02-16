@@ -40,6 +40,12 @@ class ArticlesController extends AppController
             }
             $this->Flash->error(__('Impossible d\'ajouter votre article.'));
         }
+        // Récupère une liste des tags.
+        $tags = $this->Articles->Tags->find('list');
+
+        // Passe les tags au context de la view
+        $this->set('tags', $tags);
+
         $this->set('article', $article);
     }
 
@@ -62,6 +68,11 @@ class ArticlesController extends AppController
             }
             $this->Flash->error(__('Votre article n\'a pas pu être modifié.'));
         }
+        // Récupère une liste des tags.
+        $tags = $this->Articles->Tags->find('list');
+
+        // Passe les tags au context de la view
+        $this->set('tags', $tags);
 
         $this->set('article', $article);
     }
@@ -76,6 +87,7 @@ class ArticlesController extends AppController
         $article = $this->Articles->findBySlug($slug)->firstOrFail();
         if ($this->Articles->delete($article)) {
             $this->Flash->success(__('L\'article a bien été supprimé.', $article->title));
+
             return $this->redirect(['action' => 'index']);
         }
     }
